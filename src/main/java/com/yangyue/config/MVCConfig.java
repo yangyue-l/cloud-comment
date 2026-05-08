@@ -15,14 +15,17 @@ public class MVCConfig implements WebMvcConfigurer{
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor(stringRedisTemplate))
+        //登录拦截器
+        registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns("/user/code",
                                             "/user/login",
                                             "/blog/hot", 
                                             "/shop/**",
                                             "/shop-type/**",
                                             "/voucher/**",
-                                            "/upload/**");
+                                            "/upload/**").order(1);
+        //刷新拦截器
+        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).order(0);
 
     }
 
