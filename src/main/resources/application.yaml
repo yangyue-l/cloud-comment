@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: hmdp
+    name: dp
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/comment?useSSL=false&serverTimezone=UTC
@@ -20,8 +20,12 @@ spring:
         time-between-eviction-runs: 10s
   jackson:
     default-property-inclusion: non_null # JSON处理时忽略非空字段
+  output:
+    ansi:
+      enabled: always
 mybatis-plus:
   type-aliases-package: com.yangyue.entity # 别名扫描包
 logging:
   level:
-    com.hmdp: debug
+    com.yangyue: debug
+ 

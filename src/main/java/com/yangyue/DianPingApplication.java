@@ -4,12 +4,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@MapperScan("com.hmdp.mapper")
+@MapperScan("com.yangyue.mapper")
 @SpringBootApplication
-public class HmDianPingApplication {
+public class DianPingApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HmDianPingApplication.class, args);
+        SpringApplication.run(DianPingApplication.class, args);
     }
 
 }
