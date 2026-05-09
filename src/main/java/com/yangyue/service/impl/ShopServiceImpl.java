@@ -5,6 +5,7 @@ import com.yangyue.dto.Result;
 import com.yangyue.entity.Shop;
 import com.yangyue.mapper.ShopMapper;
 import com.yangyue.service.IShopService;
+import com.yangyue.utils.CacheClient;
 import com.yangyue.utils.RedisConstants;
 
 import cn.hutool.core.util.StrUtil;
@@ -29,6 +30,8 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private CacheClient cacheClient;
 
 
     /**
@@ -38,29 +41,43 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
      */
     @Override
     public Result queryById(Long id) {
-        String key = RedisConstants.CACHE_SHOP_KEY + id;
-        String shopJson = stringRedisTemplate.opsForValue().get(key);
-        if(StrUtil.isNotBlank(shopJson)){
-            Shop shop = JSONUtil.toBean(shopJson, Shop.class);
-            return Result.ok(shop);
-        }
-        if(shopJson != null){
-            return Result.fail("店铺信息不存在");
-        }
+        //解决缓存穿透
+        // Shop shop = cacheClient.queryWithPassThrough(RedisConstants.CACHE_SHOP_KEY, id, 
+        //     Shop.class, this::getById, RedisConstants.CACHE_SHOP_TTL, TimeUnit.MINUTES);
 
 
-        Shop shop = getById(id);
-
-        if(shop == null){
-            //将空值写入
-            stringRedisTemplate.opsForValue().set(key, "",
-                                        RedisConstants.CACHE_NULL_TTL,TimeUnit.MINUTES);
         
+        //逻辑过期解决缓存击穿
+        Shop shop = cacheClient.queryWithLogicalExpire(RedisConstants.CACHE_SHOP_KEY, id, 
+            Shop.class, this::getById, RedisConstants.CACHE_SHOP_TTL, TimeUnit.MINUTES);
+
+        if (shop == null) {
             return Result.fail("店铺不存在");
         }
 
-        stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop),
-                                        RedisConstants.CACHE_SHOP_TTL,TimeUnit.MINUTES);
+        // String key = RedisConstants.CACHE_SHOP_KEY + id;
+        // String shopJson = stringRedisTemplate.opsForValue().get(key);
+        // if(StrUtil.isNotBlank(shopJson)){
+        //     Shop shop = JSONUtil.toBean(shopJson, Shop.class);
+        //     return Result.ok(shop);
+        // }
+        // if(shopJson != null){
+        //     return Result.fail("店铺信息不存在");
+        // }
+
+
+        // Shop shop = getById(id);
+
+        // if(shop == null){
+        //     //将空值写入
+        //     stringRedisTemplate.opsForValue().set(key, "",
+        //                                 RedisConstants.CACHE_NULL_TTL,TimeUnit.MINUTES);
+        
+        //     return Result.fail("店铺不存在");
+        // }
+
+        // stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop),
+        //                                 RedisConstants.CACHE_SHOP_TTL,TimeUnit.MINUTES);
 
         return Result.ok(shop);
     }
