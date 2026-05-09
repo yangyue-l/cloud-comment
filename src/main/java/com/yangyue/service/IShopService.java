@@ -1,6 +1,7 @@
 package com.yangyue.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yangyue.dto.Result;
 import com.yangyue.entity.Shop;
 
 /**
@@ -8,9 +9,14 @@ import com.yangyue.entity.Shop;
  *  服务类
  * </p>
  *
- * @author 虎哥
- * @since 2021-12-22
  */
 public interface IShopService extends IService<Shop> {
+
+    /**
+     * 根据Id查询商户信息
+     * @param id
+     * @return
+     */
+    Result queryById(Long id);
 
 }
