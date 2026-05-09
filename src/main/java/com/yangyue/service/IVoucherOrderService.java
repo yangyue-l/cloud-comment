@@ -1,6 +1,7 @@
 package com.yangyue.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yangyue.dto.Result;
 import com.yangyue.entity.VoucherOrder;
 
 /**
@@ -11,4 +12,7 @@ import com.yangyue.entity.VoucherOrder;
  */
 public interface IVoucherOrderService extends IService<VoucherOrder> {
 
+    Result seckillVoucher(Long voucherId);
+
+    Result createVoucherOrder(Long voucherId);
 }

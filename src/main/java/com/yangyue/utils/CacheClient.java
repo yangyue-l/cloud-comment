@@ -69,7 +69,13 @@ public class CacheClient {
         String key = keyPrefix + id;
         String json = stringRedisTemplate.opsForValue().get(key);
         if(StrUtil.isBlank(json)){
-            return null;
+            // 缓存不存在，查询数据库
+            R r = dbFallBack.apply(id);
+            if (r != null) {
+                // 写入缓存
+                this.setWithLogicalExpire(key, r, time, unit);
+            }
+            return r;
         }
 
         RedisData redisData = JSONUtil.toBean(json, RedisData.class);
