@@ -8,8 +8,6 @@ import com.yangyue.service.IShopService;
 import com.yangyue.utils.CacheClient;
 import com.yangyue.utils.RedisConstants;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 
 import java.util.concurrent.TimeUnit;
 
