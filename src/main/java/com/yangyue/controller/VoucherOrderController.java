@@ -2,7 +2,6 @@ package com.yangyue.controller;
 
 
 import com.yangyue.service.IVoucherOrderService;
-import com.yangyue.service.impl.VoucherOrderServiceImpl;
 import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.PathVariable;

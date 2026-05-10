@@ -8,6 +8,7 @@ import com.yangyue.mapper.VoucherOrderMapper;
 import com.yangyue.service.ISeckillVoucherService;
 import com.yangyue.service.IVoucherOrderService;
 import com.yangyue.utils.RedisIdWorker;
+import com.yangyue.utils.SimpleRedisLock;
 import com.yangyue.utils.UserHolder;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import javax.annotation.Resource;
 
 import org.springframework.aop.framework.AopContext;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     @Resource
     private ISeckillVoucherService seckillVoucherService;
     @Resource RedisIdWorker redisIdWorker;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Result seckillVoucher(Long voucherId) {
@@ -47,12 +51,19 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         }
 
         Long userId = UserHolder.getUser().getId();
-        synchronized(userId.toString().intern()){
-            //获取代理对象
-            IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
-            return proxy.createVoucherOrder(voucherId);
+        SimpleRedisLock lock = new SimpleRedisLock(stringRedisTemplate, "order:" + userId);
+        boolean isLock = lock.tryLock(1200);
+
+        if(!isLock){
+            return Result.fail("不允许重复下单");
         }
 
+        try {
+            IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
+            return proxy.createVoucherOrder(voucherId);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Transactional
