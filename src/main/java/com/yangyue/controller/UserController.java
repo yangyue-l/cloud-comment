@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import com.yangyue.dto.LoginFormDTO;
 import com.yangyue.dto.Result;
 import com.yangyue.dto.UserDTO;
+import com.yangyue.entity.User;
 import com.yangyue.entity.UserInfo;
 import com.yangyue.service.IUserInfoService;
 import com.yangyue.service.IUserService;
 import com.yangyue.utils.UserHolder;
+
+import cn.hutool.core.bean.BeanUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -78,5 +81,22 @@ public class UserController {
         // 返回
         return Result.ok(info);
         
+    }
+
+    /**
+     * 根据Id查询用户
+     * @param userId
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Result queryUserById(@PathVariable("id") Long userId){
+        // 查询详情
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.ok();
+        }
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        // 返回
+        return Result.ok(userDTO);
     }
 }
