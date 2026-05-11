@@ -2,7 +2,6 @@ package com.yangyue.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yangyue.dto.Result;
-import com.yangyue.entity.SeckillVoucher;
 import com.yangyue.entity.VoucherOrder;
 import com.yangyue.mapper.VoucherOrderMapper;
 import com.yangyue.service.ISeckillVoucherService;
@@ -10,7 +9,6 @@ import com.yangyue.service.IVoucherOrderService;
 import com.yangyue.utils.RedisIdWorker;
 import com.yangyue.utils.UserHolder;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
