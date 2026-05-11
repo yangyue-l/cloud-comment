@@ -1,6 +1,7 @@
 package com.yangyue.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yangyue.dto.Result;
 import com.yangyue.entity.Blog;
 
 /**
@@ -10,5 +11,9 @@ import com.yangyue.entity.Blog;
  *
  */
 public interface IBlogService extends IService<Blog> {
+
+    Result queryBlogById(Long id);
+
+    Result queryHotBlog(Integer current);
 
 }

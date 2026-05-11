@@ -53,7 +53,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor{
         UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
         //存在则保存到ThreadLocal
         UserHolder.saveUser(userDTO);
-
+        //TODO 将单位改成秒
         stringRedisTemplate.expire(key, RedisConstants.LOGIN_USER_TTL,TimeUnit.MINUTES);
 
         return true;
