@@ -1,9 +1,16 @@
 package com.yangyue.controller;
 
 
+import javax.annotation.Resource;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.yangyue.dto.Result;
+import com.yangyue.service.IFollowService;
 
 /**
  * <p>
@@ -14,5 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/follow")
 public class FollowController {
+
+    @Resource
+    private IFollowService followService;
+
+    @PutMapping("/{id}/{isFollow}")
+    public Result follow(@PathVariable("id") Long followUserId, @PathVariable("isFollow") Boolean isFollow){
+        return followService.follow(followUserId, isFollow);
+    }
+
+    @PutMapping("/or/not/{id}")
+    public Result isFollow(@PathVariable("id") Long followUserId){
+        return followService.isFollow(followUserId);
+    }
 
 }
